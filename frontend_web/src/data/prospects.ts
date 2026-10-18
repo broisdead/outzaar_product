@@ -1,0 +1,421 @@
+import type { Prospect } from '../types'
+
+export const prospects: Prospect[] = [
+  {
+    id: 'medcore',
+    fitScore: 92,
+    company: {
+      id: 'medcore',
+      name: 'MedCore Pharmaceuticals',
+      industry: 'Pharmaceutical Manufacturing',
+      industryKey: 'pharma',
+      city: 'Mumbai',
+      state: 'Maharashtra',
+      employeeRange: '201–500',
+      website: 'medcorepharma.in',
+      description:
+        'Growing pharmaceutical manufacturer with multiple production facilities supplying formulations to hospital chains and institutional distributors across western India.',
+      founded: 2004,
+      revenue: '₹180–220 Cr',
+      facilities: 4,
+    },
+    signals: ['Expanding operations', 'Multiple facilities', 'Digital transformation'],
+    painPoints: [
+      'Batch records and inventory tracked across separate spreadsheets',
+      'Head office has no live view of plant-level stock',
+      'Month-end close takes more than a week across sites',
+    ],
+    decisionMakers: [
+      {
+        id: 'dm-rahul',
+        name: 'Rahul Mehta',
+        title: 'VP Sales',
+        department: 'Sales',
+        seniority: 'VP',
+        note: 'Owns institutional sales and is pushing for a single order-to-cash view.',
+      },
+      {
+        id: 'dm-priya',
+        name: 'Priya Nair',
+        title: 'Chief Operating Officer',
+        department: 'Operations',
+        seniority: 'C-level',
+        note: 'Led the commissioning of the fourth plant and reports to the promoter directors.',
+      },
+      {
+        id: 'dm-sandeep',
+        name: 'Sandeep Rao',
+        title: 'Head of IT',
+        department: 'Technology',
+        seniority: 'Head',
+        note: 'Recently posted two roles for systems integration and data engineering.',
+      },
+    ],
+    whyIdentified:
+      'MedCore sits inside your size band and target geography, opened a fourth manufacturing unit this year, and has two open roles tied to systems integration. Together these point to a company outgrowing its current tooling.',
+    fitReasoning: [
+      { label: 'Industry match', score: 98, note: 'Formulations manufacturer, core to your target segment.' },
+      { label: 'Company size', score: 94, note: 'Around 380 employees, well within 50–500.' },
+      { label: 'Timing signals', score: 90, note: 'New plant and IT hiring in the last 90 days.' },
+      { label: 'Decision-maker access', score: 84, note: 'Three senior contacts identified with verified roles.' },
+    ],
+    outreachAngle:
+      'Lead with multi-site visibility. A fourth plant usually breaks the spreadsheet workflow, so open with how they close the month across locations and offer a walkthrough of plant-to-head-office reporting. Address Rahul first; he has the most to gain from cleaner order data.',
+  },
+  {
+    id: 'nova',
+    fitScore: 89,
+    company: {
+      id: 'nova',
+      name: 'Nova Healthcare Labs',
+      industry: 'Diagnostics and Healthcare',
+      industryKey: 'healthcare',
+      city: 'Mumbai',
+      state: 'Maharashtra',
+      employeeRange: '51–200',
+      website: 'novahealthcarelabs.in',
+      description:
+        'Diagnostics and reagent maker that recently launched a rapid-testing product line and is building out a second lab to meet hospital demand.',
+      founded: 2015,
+      revenue: '₹45–60 Cr',
+      facilities: 2,
+    },
+    signals: ['New product launch', 'Second lab under construction', 'Hiring in operations'],
+    painPoints: [
+      'Reagent lot tracking handled manually',
+      'Order handling split between email and phone',
+      'Limited reporting for hospital account managers',
+    ],
+    decisionMakers: [
+      {
+        id: 'dm-ananya',
+        name: 'Ananya Sharma',
+        title: 'Director, Business Development',
+        department: 'Sales',
+        seniority: 'Director',
+        note: 'Drives hospital partnerships and is measured on new account growth.',
+      },
+      {
+        id: 'dm-karthik',
+        name: 'Karthik Menon',
+        title: 'Head of Operations',
+        department: 'Operations',
+        seniority: 'Head',
+        note: 'Manages lab set-up and supplier onboarding for the new facility.',
+      },
+    ],
+    whyIdentified:
+      'A new rapid-testing line and a second lab are creating volume the current manual processes were not built for. The business development director has been publicly active about hospital expansion.',
+    fitReasoning: [
+      { label: 'Industry match', score: 88, note: 'Healthcare manufacturing adjacent to pharma.' },
+      { label: 'Company size', score: 90, note: 'Around 120 employees, inside the band.' },
+      { label: 'Timing signals', score: 93, note: 'Product launch this quarter.' },
+      { label: 'Decision-maker access', score: 85, note: 'Director-level owner of new business identified.' },
+    ],
+    outreachAngle:
+      'Reference the new testing line and the pressure it puts on order handling. Ananya is focused on landing hospital accounts, so position OUTZAAR around getting in front of more hospital buyers without adding headcount.',
+  },
+  {
+    id: 'sanvira',
+    fitScore: 87,
+    company: {
+      id: 'sanvira',
+      name: 'Sanvira Lifesciences',
+      industry: 'Pharmaceutical Manufacturing',
+      industryKey: 'pharma',
+      city: 'Ahmedabad',
+      state: 'Gujarat',
+      employeeRange: '201–500',
+      website: 'sanviralife.com',
+      description:
+        'Contract and branded formulations manufacturer with export approvals for several African and Southeast Asian markets and two WHO-GMP certified plants.',
+      founded: 2001,
+      revenue: '₹210–260 Cr',
+      facilities: 3,
+    },
+    signals: ['New export approvals', 'WHO-GMP certified plants', 'Hiring business development'],
+    painPoints: [
+      'Export documentation prepared by hand for each shipment',
+      'Sales and plant planning run on separate tools',
+      'Difficulty forecasting demand for contract customers',
+    ],
+    decisionMakers: [
+      {
+        id: 'dm-meera',
+        name: 'Meera Kulkarni',
+        title: 'Head of Business Development',
+        department: 'Sales',
+        seniority: 'Head',
+        note: 'Recently expanded her team from three to seven people.',
+      },
+      {
+        id: 'dm-harshad',
+        name: 'Harshad Patel',
+        title: 'Plant Head',
+        department: 'Operations',
+        seniority: 'Head',
+        note: 'Responsible for production scheduling across both certified plants.',
+      },
+    ],
+    whyIdentified:
+      'New export approvals mean more buyers to find and qualify, and the business development team has doubled in size. That combination is where outbound automation pays back fastest.',
+    fitReasoning: [
+      { label: 'Industry match', score: 96, note: 'Contract and branded formulations.' },
+      { label: 'Company size', score: 88, note: 'Around 320 employees.' },
+      { label: 'Timing signals', score: 84, note: 'Business development team growing.' },
+      { label: 'Decision-maker access', score: 80, note: 'Head of BD identified; plant head is secondary.' },
+    ],
+    outreachAngle:
+      'Talk about finding and qualifying new export buyers faster. With seven people in business development, the case is about making each of them more productive rather than replacing anyone.',
+  },
+  {
+    id: 'apex',
+    fitScore: 84,
+    company: {
+      id: 'apex',
+      name: 'Apex Industrial Systems',
+      industry: 'Industrial Manufacturing',
+      industryKey: 'manufacturing',
+      city: 'Pune',
+      state: 'Maharashtra',
+      employeeRange: '201–500',
+      website: 'apexindsys.in',
+      description:
+        'Maker of process control panels and automation components for pharma and food plants, adding a third production line to meet order backlog.',
+      founded: 2009,
+      revenue: '₹120–150 Cr',
+      facilities: 2,
+    },
+    signals: ['Hiring sales representatives', 'Third production line', 'Order backlog growing'],
+    painPoints: [
+      'Quotations built manually from past orders',
+      'Sales pipeline tracked in personal spreadsheets',
+      'Lead handover between field reps and the head office is inconsistent',
+    ],
+    decisionMakers: [
+      {
+        id: 'dm-vikram',
+        name: 'Vikram Shah',
+        title: 'Chief Executive Officer',
+        department: 'Executive',
+        seniority: 'C-level',
+        note: 'Founder-led, involved in every large tooling decision.',
+      },
+      {
+        id: 'dm-deepa',
+        name: 'Deepa Kulkarni',
+        title: 'Chief Operating Officer',
+        department: 'Operations',
+        seniority: 'C-level',
+        note: 'Owns production planning and the new line rollout.',
+      },
+    ],
+    whyIdentified:
+      'Apex is hiring field sales representatives while its backlog grows, and its own customers are your target segment, which makes the outreach story easy to tell.',
+    fitReasoning: [
+      { label: 'Industry match', score: 74, note: 'Supplier to pharma, not a pharma manufacturer.' },
+      { label: 'Company size', score: 92, note: 'Around 290 employees.' },
+      { label: 'Timing signals', score: 88, note: 'Active hiring for sales roles.' },
+      { label: 'Decision-maker access', score: 86, note: 'Founder-CEO is directly reachable.' },
+    ],
+    outreachAngle:
+      'Keep it short and founder-to-founder. Vikram cares about getting new sales hires productive quickly, so lead with how OUTZAAR feeds a new rep with qualified conversations from the first week.',
+  },
+  {
+    id: 'kestrel',
+    fitScore: 81,
+    company: {
+      id: 'kestrel',
+      name: 'Kestrel Formulations',
+      industry: 'Pharmaceutical Manufacturing',
+      industryKey: 'pharma',
+      city: 'Hyderabad',
+      state: 'Telangana',
+      employeeRange: '201–500',
+      website: 'kestrelformulations.in',
+      description:
+        'Oral solid dosage manufacturer serving domestic institutional buyers, with a recently approved ointment line and a small in-house sales team.',
+      founded: 2007,
+      revenue: '₹95–120 Cr',
+      facilities: 2,
+    },
+    signals: ['New product approval', 'Small in-house sales team', 'Regional expansion'],
+    painPoints: [
+      'Small team covering a growing list of institutional accounts',
+      'Little visibility into which accounts are going quiet',
+    ],
+    decisionMakers: [
+      {
+        id: 'dm-suresh',
+        name: 'Suresh Iyer',
+        title: 'Managing Director',
+        department: 'Executive',
+        seniority: 'C-level',
+        note: 'Signs off on all sales and distribution changes.',
+      },
+      {
+        id: 'dm-neha',
+        name: 'Neha Reddy',
+        title: 'Head of Operations',
+        department: 'Operations',
+        seniority: 'Head',
+        note: 'Coordinates supply commitments with institutional customers.',
+      },
+    ],
+    whyIdentified:
+      'A newly approved product line and a lean sales team suggest capacity constraints on the outbound side.',
+    fitReasoning: [
+      { label: 'Industry match', score: 95, note: 'Oral solids manufacturer.' },
+      { label: 'Company size', score: 86, note: 'Around 240 employees.' },
+      { label: 'Timing signals', score: 70, note: 'Product approval only, no hiring signals.' },
+      { label: 'Decision-maker access', score: 72, note: 'MD is reachable but guarded.' },
+    ],
+    outreachAngle:
+      'Focus on leverage for a small team. Avoid heavy technology language with Suresh; talk in terms of accounts covered and meetings created.',
+  },
+  {
+    id: 'dhanvantari',
+    fitScore: 76,
+    company: {
+      id: 'dhanvantari',
+      name: 'Dhanvantari Biotech',
+      industry: 'Biotechnology',
+      industryKey: 'pharma',
+      city: 'Bengaluru',
+      state: 'Karnataka',
+      employeeRange: '51–200',
+      website: 'dhanvantaribio.co.in',
+      description:
+        'Biologics and enzyme producer supplying research institutions and specialty pharma, with a pilot plant in Peenya and a new commercial team.',
+      founded: 2012,
+      revenue: '₹35–50 Cr',
+      facilities: 1,
+    },
+    signals: ['Building commercial team', 'Pilot plant scale-up'],
+    painPoints: [
+      'First dedicated sales function still defining its process',
+      'Research-led culture with little outbound experience',
+    ],
+    decisionMakers: [
+      {
+        id: 'dm-arvind',
+        name: 'Dr. Arvind Rao',
+        title: 'Chief Executive Officer',
+        department: 'Executive',
+        seniority: 'C-level',
+        note: 'Scientist-founder, currently hiring the first commercial lead.',
+      },
+      {
+        id: 'dm-lakshmi',
+        name: 'Lakshmi Venkat',
+        title: 'Head of IT',
+        department: 'Technology',
+        seniority: 'Head',
+        note: 'Runs a two-person team covering lab and corporate systems.',
+      },
+    ],
+    whyIdentified:
+      'A first commercial team is being built from scratch, which is a good moment to introduce a process before habits form.',
+    fitReasoning: [
+      { label: 'Industry match', score: 78, note: 'Biotech, adjacent to formulations.' },
+      { label: 'Company size', score: 82, note: 'Around 110 employees.' },
+      { label: 'Timing signals', score: 74, note: 'Commercial hiring in progress.' },
+      { label: 'Decision-maker access', score: 66, note: 'No dedicated sales owner yet.' },
+    ],
+    outreachAngle:
+      'Speak to the CEO about building a repeatable outbound process before the commercial hire lands, so the new lead inherits working pipeline.',
+  },
+  {
+    id: 'aurelia',
+    fitScore: 71,
+    company: {
+      id: 'aurelia',
+      name: 'Aurelia Generics',
+      industry: 'Pharmaceutical Manufacturing',
+      industryKey: 'pharma',
+      city: 'Baddi',
+      state: 'Himachal Pradesh',
+      employeeRange: '501–1000',
+      website: 'aureliagenerics.com',
+      description:
+        'High-volume generics manufacturer with several plants in the Baddi cluster, selling primarily through distributors and government tenders.',
+      founded: 1998,
+      revenue: '₹520–600 Cr',
+      facilities: 5,
+    },
+    signals: ['Tender-driven growth', 'Legacy systems in use'],
+    painPoints: [
+      'Long procurement cycles for new software',
+      'Legacy tooling across older plants',
+    ],
+    decisionMakers: [
+      {
+        id: 'dm-gaurav',
+        name: 'Gaurav Bhatia',
+        title: 'Chief Operating Officer',
+        department: 'Operations',
+        seniority: 'C-level',
+        note: 'Runs plant operations and approves technology spend above a set limit.',
+      },
+      {
+        id: 'dm-ritu',
+        name: 'Ritu Malhotra',
+        title: 'Chief Information Officer',
+        department: 'Technology',
+        seniority: 'C-level',
+        note: 'Leading a multi-year systems consolidation programme.',
+      },
+    ],
+    whyIdentified:
+      'Strong industry match, but larger than your target band and likely to move slowly. Included because of the systems consolidation programme.',
+    fitReasoning: [
+      { label: 'Industry match', score: 92, note: 'Generics manufacturer.' },
+      { label: 'Company size', score: 48, note: 'Above the 50–500 range.' },
+      { label: 'Timing signals', score: 66, note: 'Consolidation programme is underway.' },
+      { label: 'Decision-maker access', score: 74, note: 'Two C-level contacts identified.' },
+    ],
+    outreachAngle:
+      'Approach the CIO with a point of view on consolidation, and expect a longer cycle. This account is better suited to a slower, multi-touch sequence.',
+  },
+  {
+    id: 'sundaram',
+    fitScore: 63,
+    company: {
+      id: 'sundaram',
+      name: 'Sundaram Specialty Chemicals',
+      industry: 'Specialty Chemicals',
+      industryKey: 'chemicals',
+      city: 'Chennai',
+      state: 'Tamil Nadu',
+      employeeRange: '201–500',
+      website: 'sundaramchem.in',
+      description:
+        'Manufacturer of pharma intermediates and specialty chemicals with two plants near Ennore, supplying API producers in the south.',
+      founded: 2003,
+      revenue: '₹140–170 Cr',
+      facilities: 2,
+    },
+    signals: ['Supplies pharma customers', 'Plant upgrade planned'],
+    painPoints: ['Manual production planning', 'Compliance reporting takes significant effort'],
+    decisionMakers: [
+      {
+        id: 'dm-ramesh',
+        name: 'Ramesh Subramanian',
+        title: 'Director, Operations',
+        department: 'Operations',
+        seniority: 'Director',
+        note: 'Owns the plant upgrade budget.',
+      },
+    ],
+    whyIdentified:
+      'Adjacent to your core segment through its pharma customers, with a planned plant upgrade. Lower fit because the buying context differs.',
+    fitReasoning: [
+      { label: 'Industry match', score: 58, note: 'Chemicals, one step removed from pharma.' },
+      { label: 'Company size', score: 90, note: 'Around 260 employees.' },
+      { label: 'Timing signals', score: 60, note: 'Upgrade planned but not yet funded.' },
+      { label: 'Decision-maker access', score: 55, note: 'One contact identified.' },
+    ],
+    outreachAngle:
+      'Only worth pursuing if you sell to pharma supply chains. Start with a light-touch note tied to the plant upgrade.',
+  },
+]

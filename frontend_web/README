@@ -1,0 +1,333 @@
+# OUTZAAR — Web Frontend
+
+A production-styled React frontend for OUTZAAR, built as a like-for-like upgrade of the
+existing Streamlit prototype (`frontend/`, untouched). This app runs entirely on **mock
+data** right now. This document explains what exists, how it's wired, and exactly what
+the backend needs to provide to replace the mocks.
+
+---
+
+## 1. Stack
+
+| Layer      | Choice                                   |
+|------------|-------------------------------------------|
+| Build tool | Vite                                       |
+| Language   | TypeScript (strict mode)                   |
+| UI         | React 18, React Router 6                   |
+| Styling    | Tailwind CSS (utility classes, no CSS-in-JS)|
+| Motion     | Framer Motion                              |
+| Icons      | lucide-react                               |
+
+No backend calls are wired up yet — see §6.
+
+---
+
+## 2. Run it
+
+```bash
+npm install
+npm run dev        # http://localhost:5173
+npm run typecheck  # tsc --noEmit
+npm run build       # type-checks, then builds to dist/
+```
+
+`vite.config.ts` proxies `/api/*` → `http://localhost:8000/*`, so once FastAPI is running
+locally, fetches to `/api/...` from the frontend hit it with no CORS setup needed.
+
+---
+
+## 3. Directory map
+
+```
+src/
+├── pages/                  One component per route
+│   ├── ProspectingPage.tsx
+│   ├── ConversationsPage.tsx
+│   └── DashboardPage.tsx
+├── components/
+│   ├── layout/              App shell: sidebar, mobile nav/header, agent status
+│   ├── ui/                  Design-system primitives (Button, Badge, Drawer, Dialog, …)
+│   ├── prospecting/         ICP input/understanding, prospect card/drawer, filters
+│   ├── conversations/       Conversation list, chat thread, AI panel, booking dialog
+│   └── dashboard/           Metric strip, pipeline funnel, activity feed, attention list
+├── data/                    Mock data + the "AI understanding" logic (see §5)
+├── types/                   All shared TypeScript interfaces (see §5)
+├── services/api.ts          The ONLY file that should ever be edited to go live (see §6)
+├── hooks/useMediaQuery.ts
+└── lib/                     Small helpers: cn(), time formatting
+```
+
+Nothing outside `src/services/api.ts` and `src/data/*` needs to change when you connect
+a real backend — components only ever call functions from `services/api.ts`.
+
+---
+
+## 4. What's implemented, page by page
+
+### AI Prospecting (`/prospecting`)
+- Free-text "describe your ideal customer" input, with an inline submit button and
+  four example prompts.
+- **"OUTZAAR understands" panel** — shows the parsed ICP (industry, location, company
+  size, potential need, likely decision makers, buying signals) with a loading state.
+- **Improve ICP** button — asks the backend to rewrite/tighten the free-text description.
+- **Find Prospects** — fetches and renders company cards (fit score ring, signals,
+  pain point preview, top decision maker), with a skeleton loading state and an empty
+  state when nothing matches.
+- Client-side filter toolbar (minimum fit score slider, location, sort by fit/name) —
+  purely local; does not re-hit the backend.
+- Clicking a card opens a **detail drawer**: full company overview, fit-score
+  reasoning breakdown, buying signals, pain points, all decision makers, and a
+  recommended outreach angle. Includes an "Add to outreach" toggle (local state only).
+
+### Conversations (`/conversations`)
+- Three-pane layout: conversation list (search + "All / Needs action / Waiting"
+  filter) → chat thread → AI panel. Collapses to list↔chat on mobile/tablet, with the
+  AI panel becoming a slide-over drawer below `xl` breakpoint.
+- Chat thread renders full message history with day dividers, sender grouping, and
+  delivery ticks (sending / delivered / read).
+- Composer supports Email/WhatsApp channel switching per conversation, "draft with
+  OUTZAAR" (fills the suggested response), and optimistic send (message appears
+  immediately with a "sending" tick, then reconciles with the backend's reply).
+- **AI panel**: intent badge, confidence bar, plain-language summary, recommended
+  action, editable suggested response with **Use / Edit / Book Meeting**, and a
+  conversation-signals checklist (positive/neutral/negative).
+- **Book Meeting** opens a dialog with four proposed slots (next Tue/Wed, two times
+  each); confirming appends a system message to the thread and flips status to
+  "Meeting opportunity."
+- Five conversations are seeded, one for each state: meeting opportunity, interested/
+  needs info, follow-up requested, not interested, no response yet.
+
+### Dashboard (`/dashboard`)
+- 7-day / 30-day range toggle.
+- Metric strip: prospects found, contacts identified, messages sent, replies,
+  meetings — each with a delta and a small sparkline.
+- **Outbound pipeline** — horizontal funnel (prospects → decision makers → contacted
+  → engaged → meetings), expandable per stage for a plain-language readout of
+  conversion between stages.
+- **AI activity** feed — timestamped log of what "OUTZAAR" has been doing.
+- **Needs attention** — cards for conversations requiring action; clicking one
+  navigates to `/conversations?c=<id>` and opens that thread directly.
+
+### Global
+- Left sidebar (desktop) / bottom nav + top bar (mobile) with an "OUTZAAR AI is
+  online" status block.
+- One design system throughout: dark navy background, glass-panel cards, blue→violet
+  gradients, consistent spacing/typography scale. No emoji anywhere in the UI copy.
+- Every async view (ICP understanding, prospect search, conversation list, AI
+  analysis, dashboard) has a purpose-built loading skeleton and, where relevant, an
+  empty state — nothing spinners-and-blank-screen.
+
+---
+
+## 5. Data model (`src/types/index.ts`)
+
+All 22 exported interfaces are the contract for the backend. The most important ones:
+
+- **`IcpProfile`** — output of "what OUTZAAR understands": `industry`, `location`,
+  `companySize`, `potentialNeed`, `decisionMakers: string[]`, `buyingSignals: string[]`,
+  plus `industryKeys` (used only by the mock filter — the real backend doesn't need
+  to reproduce this field, it's an implementation detail of `src/data/icp.ts`).
+- **`Prospect`** — wraps a `Company`, a `fitScore`, `signals`, `painPoints`,
+  `decisionMakers: DecisionMaker[]`, `whyIdentified`, `fitReasoning: FitFactor[]`
+  (label/score/note triples shown in the drawer), and `outreachAngle`.
+- **`Conversation`** — `contact`, `company`, `industry`, `context`, `status`
+  (`meeting | interested | followup | declined | awaiting`), `channel`
+  (`email | whatsapp`), `messages: Message[]`, and `analysis: AIAnalysis`.
+- **`AIAnalysis`** — `intent`, `confidence` (0–100), `summary`, `recommendedAction`,
+  `actionKind` (`meeting | send_info | follow_up | close | wait` — drives whether
+  "Book Meeting" is enabled), `suggestedResponse`, `signals: ConversationSignal[]`
+  (label + `positive | neutral | negative` tone).
+- **`DashboardData`** — `ranges: { '7d' | '30d': { metrics, pipeline } }`,
+  `activities: Activity[]`, `attention: AttentionItem[]`.
+
+Mock data implementing these shapes lives in `src/data/{prospects,conversations,
+dashboard,icp}.ts` — useful as reference payloads when writing FastAPI response
+models (e.g. copy `src/data/conversations.ts` into a Pydantic-shaped fixture).
+
+---
+
+## 6. Connecting the FastAPI backend
+
+Every network call the frontend will ever make goes through **`src/services/api.ts`**.
+Each exported function already has the suggested route as a comment and a working
+mock branch. To go live:
+
+1. Implement the corresponding FastAPI route.
+2. Fill in the `request<T>(...)` branch for that function (the helper is already
+   written — it does `fetch(`${API_BASE}${path}`)` and JSON-decodes).
+3. Set `VITE_USE_MOCK=false` in a `.env.local` (copy `.env.example`).
+
+No component code changes — they only ever call `getProspects()`, `sendMessage()`, etc.
+
+| Function                                   | Suggested route                              | Notes |
+|---------------------------------------------|-----------------------------------------------|-------|
+| `analyzeIcp(text)`                          | `POST /icp/analyze`                            | Returns `IcpProfile` |
+| `improveIcp(text)`                          | `POST /icp/improve`                            | Returns `{ text, profile }` |
+| `getProspects(icp)`                         | `POST /prospects/search`                       | Returns `Prospect[]` |
+| `getConversations()`                        | `GET /conversations`                           | Returns `Conversation[]` |
+| `sendMessage(conversationId, body, channel)`| `POST /conversations/{id}/messages`            | Returns the created `Message` |
+| `analyzeConversation(conversationId)`       | `POST /conversations/{id}/analyze`             | Returns `AIAnalysis` |
+| `bookMeeting(conversationId, slot, channel)`| `POST /conversations/{id}/meetings`            | Returns a system `Message` |
+| `getDashboard()`                            | `GET /dashboard`                               | Returns `DashboardData` |
+
+`API_BASE` defaults to `/api` (proxied to `localhost:8000` in dev via
+`vite.config.ts`); override with `VITE_API_URL` for other environments.
+
+---
+
+## 7. Cloudflare Tunnel & app.outzaar.com
+
+The React frontend can be exposed publicly from the local development
+machine using Cloudflare Tunnel, without opening router ports or
+exposing the machine's public IP.
+
+Domain configuration
+
+outzaar.com is registered with Hostinger, while DNS is delegated to
+Cloudflare.
+
+Current Cloudflare nameservers:
+
+kara.ns.cloudflare.com
+phil.ns.cloudflare.com
+
+The public application hostname is:
+
+https://app.outzaar.com
+
+Local architecture
+
+When the frontend is running locally, the request path is:
+
+Browser
+   │
+   ▼
+https://app.outzaar.com
+   │
+   ▼
+Cloudflare DNS
+   │
+   ▼
+Cloudflare Tunnel
+   │
+   ▼
+Local machine
+   │
+   ▼
+http://localhost:5173
+   │
+   ├── Frontend → React + Vite
+   │
+   └── /api/* → Vite proxy
+                  │
+                  ▼
+            http://localhost:8000
+                  │
+                  ▼
+              FastAPI
+
+The tunnel therefore exposes the Vite frontend on port 5173. API
+requests continue to use the existing Vite development proxy and are
+forwarded locally to FastAPI on port 8000.
+
+# One-time Cloudflare setup
+
+Install cloudflared if it is not already installed, then authenticate:
+
+cloudflared tunnel login
+
+Create the named tunnel:
+
+cloudflared tunnel create outzaar-app
+
+Create the DNS route:
+
+cloudflared tunnel route dns outzaar-app app.outzaar.com
+
+This creates the Cloudflare DNS mapping for app.outzaar.com to the
+tunnel.
+
+Tunnel configuration
+
+Create:
+
+~/.cloudflared/config.yml
+
+with:
+
+tunnel: YOUR-TUNNEL-UUID
+credentials-file: /Users/aiyan/.cloudflared/YOUR-TUNNEL-UUID.json
+
+ingress:
+  - hostname: app.outzaar.com
+    service: http://localhost:5173
+
+  - service: http_status:404
+
+Replace YOUR-TUNNEL-UUID with the UUID returned by:
+
+cloudflared tunnel create outzaar-app
+
+Validate the configuration:
+
+cloudflared tunnel ingress validate
+
+Start the tunnel:
+
+cloudflared tunnel run outzaar-app
+
+Running OUTZAAR locally
+
+- Start the FastAPI backend on port 8000, then start the React frontend:
+
+npm install
+npm run dev
+
+The frontend should be available locally at:
+
+http://localhost:5173
+
+With the Cloudflare tunnel running, the same frontend is publicly
+accessible at:
+
+https://app.outzaar.com
+
+Important
+
+The Cloudflare tunnel is currently intended for local development/demo
+access. Closing the cloudflared tunnel run outzaar-app process
+disconnects the public hostname from the local application.
+
+For a permanent production deployment, the frontend should eventually be
+deployed to a production hosting environment rather than relying on a
+developer laptop and Vite's development server.
+
+
+## 8. Explicitly not built yet
+
+Per the brief, this phase is frontend/demo only:
+
+- No authentication
+- No PostgreSQL / Celery / Redis
+- No real Gmail or WhatsApp Business API integration — the channel switch is UI-only
+- No real AI model calls — `analyzeIcp`, `improveIcp`, and `analyzeConversation` are
+  simple rule-based mocks in `src/data/icp.ts` / `src/data/conversations.ts`, meant to
+  be replaced wholesale by real model calls server-side
+- No persistence — refreshing the page resets queued prospects, sent-message state,
+  etc. (conversation history itself reloads from the mock data each time)
+
+---
+
+## 9. Notes for whoever builds the backend
+
+- `Prospect.fitReasoning` and `Conversation.analysis.signals` are UI-critical — the
+  drawer and AI panel are built around showing *why*, not just a score. Keep these in
+  any real model output.
+- `AIAnalysis.actionKind` directly gates the "Book Meeting" button (disabled when
+  `close`). Keep this enum stable or the frontend needs a small tweak.
+- `Conversation.status` drives the colored badges (`green/blue/amber/red/slate` —
+  mapped in `src/data/conversations.ts` → `statusMeta`). New statuses need a matching
+  entry there.
+- The mock `getProspects` filters by an internal `industryKey` your backend doesn't
+  need to replicate — it's only there so demo data can be filtered without a real
+  classifier. Real responses just return whatever `Prospect[]` array is relevant.

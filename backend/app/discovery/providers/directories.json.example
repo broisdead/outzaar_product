@@ -1,0 +1,17 @@
+[
+  {
+    "name": "example_directory",
+    "disabled": true,
+    "url_template": "https://directory.example.com/search?q={query}&city={city}&page={page}",
+    "max_pages": 10,
+    "respect_robots": true,
+    "item_selector": "div.company-card",
+    "name_selector": "h2.name",
+    "link_selector": "h2.name a",
+    "city_selector": ".city",
+    "address_selector": ".address",
+    "phone_selector": ".phone",
+    "website_selector": "a.website",
+    "description_selector": ".summary"
+  }
+]
